@@ -781,6 +781,11 @@ extension GameViewController
             // they don't stick after resuming.
             self.swipeControlsOverlayView?.pauseSession()
         }
+        else if self.emulatorCore?.state == .running
+        {
+            // Emulation (re)started: keep autofire pulsing without a touch.
+            self.swipeControlsOverlayView?.resumeSession()
+        }
         
         if self.emulatorCore?.state == .running
         {
@@ -965,11 +970,13 @@ private extension GameViewController
 
         self.view.addSubview(overlayView)
 
+        // Cover the entire screen so swipes work over the game video too —
+        // skin buttons (Start/Select/Menu) still pass through by frame.
         NSLayoutConstraint.activate([
-            overlayView.leadingAnchor.constraint(equalTo: self.controllerView.leadingAnchor),
-            overlayView.trailingAnchor.constraint(equalTo: self.controllerView.trailingAnchor),
-            overlayView.topAnchor.constraint(equalTo: self.controllerView.topAnchor),
-            overlayView.bottomAnchor.constraint(equalTo: self.controllerView.bottomAnchor)
+            overlayView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            overlayView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            overlayView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            overlayView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
         ])
 
         self.swipeControlsOverlayView = overlayView

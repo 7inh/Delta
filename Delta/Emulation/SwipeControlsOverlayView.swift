@@ -145,6 +145,13 @@ final class SwipeControlsOverlayView: UIView
         self.updateHints()
     }
 
+    /// Called by GameViewController when emulation (re)starts so autofire
+    /// resumes without requiring a touch.
+    func resumeSession()
+    {
+        self.updateDisplayLink()
+    }
+
     // MARK: - Passthrough -
 
     func updatePassthroughFrames()
@@ -174,7 +181,9 @@ final class SwipeControlsOverlayView: UIView
             let inputStrings = item.inputs.allInputs.map(\.stringValue)
             let handlesItem = inputStrings.contains { gestureInputs.contains($0) }
 
-            return handlesItem ? nil : item.frame.applying(scale)
+            let frame = item.frame.applying(scale)
+
+            return handlesItem ? nil : self.convert(frame, from: controllerView)
         }
     }
 

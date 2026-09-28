@@ -33,15 +33,9 @@ struct SettingsRow<Content: View>: View
             Label {
                 label
             } icon: {
-                if #available(iOS 26, *)
-                {
-                    image
-                        .glassEffect(.regular.tint(color), in: RoundedRectangle(cornerRadius: badgeSize / 4))
-                }
-                else
-                {
-                    image
-                }
+                // DeltaSwipe: solid tinted background + white glyph (high contrast
+                // in light and dark mode; the glass effect washed the glyph out).
+                image
             }
         }
     }

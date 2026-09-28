@@ -80,10 +80,11 @@ final class SwipeInputEngine
     private var viewportWidth: CGFloat = 0
 
     /// Whether the display link can be paused (nothing dynamic in progress).
-    /// Note: sticky direction latches are static, so they don't require ticking.
+    /// Note: sticky direction latches are static, so they don't require ticking,
+    /// but autofire must keep pulsing even when no finger is on the screen.
     var isIdle: Bool
     {
-        return self.touches.isEmpty && self.jumpPulseRemaining <= 0 && !self.fireEmitting
+        return self.touches.isEmpty && self.jumpPulseRemaining <= 0 && !self.isFireEffective
     }
 
     var isFireEffective: Bool
