@@ -44,6 +44,7 @@ struct SwipeControlsSettingsView: View
                     VStack(alignment: .leading, spacing: 6)
                     {
                         Text("• Swipe left/right to run — keeps going until you swipe the other way or tap to stop")
+                        Text("• Tap the opposite side while running to turn instantly")
                         Text("• Swipe up to jump (hold to jump longer)")
                         Text("• Autofire presses the fire button for you")
                         Text("• Double-tap to toggle autofire on/off")
@@ -87,6 +88,10 @@ struct SwipeControlsSettingsView: View
             self.pickerRow("Swipe Sensitivity", values: [12, 16, 20, 26, 34],
                            get: { self.feature.swipeThreshold },
                            set: { self.feature.swipeThreshold = $0 })
+
+            self.toggleRow("Tap Opposite Side to Turn",
+                           get: { self.feature.isTapOppositeSideToTurnEnabled },
+                           set: { self.feature.isTapOppositeSideToTurnEnabled = $0 })
         }
     }
 

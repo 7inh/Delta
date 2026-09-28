@@ -270,6 +270,70 @@ do
     check(inputs().contains("left") && inputs().contains("up"), "8-way: diagonal -> left+up")
 }
 
+// MARK: - 12. Tap opposite side to turn (default on) -
+
+do
+{
+    let (engine, _, inputs) = makeEngine()
+    engine.configuration.directionMode = .sticky
+    engine.setViewportWidth(400)
+
+    // Start running left (swipe left).
+    engine.touchBegan(id: 1, at: CGPoint(x: 200, y: 400), time: 0)
+    engine.touchMoved(id: 1, at: CGPoint(x: 150, y: 400))
+    engine.touchEnded(id: 1, at: CGPoint(x: 140, y: 400), time: 0.3)
+    check(inputs() == ["left"], "turn: running left first")
+
+    // Tap on the RIGHT side -> instantly turns right, no swipe needed.
+    engine.touchBegan(id: 2, at: CGPoint(x: 320, y: 400), time: 1.0)
+    check(inputs() == ["right"], "turn: opposite-side tap flips direction immediately")
+
+    // Releasing that tap must NOT stop movement (it was a reversing tap).
+    engine.touchEnded(id: 2, at: CGPoint(x: 320, y: 400), time: 1.08)
+    check(inputs() == ["right"], "turn: reversing tap doesn't stop movement")
+
+    // And it must not register as a fire-toggle tap either.
+    engine.touchBegan(id: 3, at: CGPoint(x: 320, y: 400), time: 1.2)
+    engine.touchEnded(id: 3, at: CGPoint(x: 320, y: 400), time: 1.3)
+    check(engine.isFireEffective, "turn: reversing tap excluded from double-tap toggle")
+}
+
+do
+{
+    // Tapping the SAME side does not reverse.
+    let (engine, _, inputs) = makeEngine()
+    engine.configuration.directionMode = .sticky
+    engine.setViewportWidth(400)
+
+    engine.touchBegan(id: 1, at: CGPoint(x: 100, y: 400), time: 0)
+    engine.touchMoved(id: 1, at: CGPoint(x: 40, y: 400))
+    engine.touchEnded(id: 1, at: CGPoint(x: 40, y: 400), time: 0.3)
+    check(inputs() == ["left"], "turn-same: running left")
+
+    engine.touchBegan(id: 2, at: CGPoint(x: 80, y: 400), time: 1.0) // still left half
+    check(inputs() == ["left"], "turn-same: same-side tap doesn't flip")
+    engine.touchEnded(id: 2, at: CGPoint(x: 80, y: 400), time: 1.1)
+    check(inputs().isEmpty, "turn-same: normal tap still stops (sticky)")
+}
+
+do
+{
+    // Option disabled restores swipe-only behavior.
+    let (engine, _, inputs) = makeEngine()
+    engine.configuration.directionMode = .sticky
+    engine.configuration.isTapOppositeSideToTurnEnabled = false
+    engine.setViewportWidth(400)
+
+    engine.touchBegan(id: 1, at: CGPoint(x: 200, y: 400), time: 0)
+    engine.touchMoved(id: 1, at: CGPoint(x: 150, y: 400))
+    engine.touchEnded(id: 1, at: CGPoint(x: 140, y: 400), time: 0.3)
+
+    engine.touchBegan(id: 2, at: CGPoint(x: 320, y: 400), time: 1.0)
+    check(inputs() == ["left"], "turn-off: opposite tap does nothing when disabled")
+    engine.touchEnded(id: 2, at: CGPoint(x: 320, y: 400), time: 1.1)
+    check(inputs().isEmpty, "turn-off: tap stops movement as before")
+}
+
 // MARK: - Report -
 
 print("\(checks - failures)/\(checks) checks passed")

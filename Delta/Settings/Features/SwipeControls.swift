@@ -93,6 +93,9 @@ struct SwipeControlsOptions
     @Option(name: "Swipe Sensitivity", description: "How far you must swipe before a direction is recognized.", values: [12, 16, 20, 26, 34])
     var swipeThreshold: Int = 20
 
+    @Option(name: "Tap Opposite Side to Turn", description: "While running, tap the other side of the screen to turn around instantly — no swipe needed.")
+    var isTapOppositeSideToTurnEnabled: Bool = true
+
     @Option(name: "Jump Button", description: "Button pressed by the swipe-up gesture.", values: SwipeButton.allCases)
     var jumpButton: SwipeButton = .a
 

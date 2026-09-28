@@ -102,6 +102,7 @@ final class SwipeControlsOverlayView: UIView
         config.jumpButton = feature.jumpButton.rawValue
         config.fireButton = feature.fireButton.rawValue
         config.isAutofireAlwaysEnabled = feature.isAutofireAlwaysEnabled
+        config.isTapOppositeSideToTurnEnabled = feature.isTapOppositeSideToTurnEnabled
         config.autofireRate = feature.autofireRate
         config.jumpPulseFrames = feature.jumpPulseFrames
         config.showsHints = feature.showsHints

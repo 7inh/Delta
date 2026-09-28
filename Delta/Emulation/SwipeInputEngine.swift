@@ -27,6 +27,7 @@ final class SwipeInputEngine
         var jumpButton = "a"
         var fireButton = "b"
         var isAutofireAlwaysEnabled = true
+        var isTapOppositeSideToTurnEnabled = true
         var autofireRate = 8 // Hz
         var jumpPulseFrames = 8
         var doubleTapWindow: TimeInterval = 0.3
@@ -77,6 +78,7 @@ final class SwipeInputEngine
     private var fireEmitting = false
     private var firePulsePhase = 0
     private var lastTap: (id: Int, endDate: TimeInterval)?
+    private var reversingTouchIDs = Set<Int>()
     private var viewportWidth: CGFloat = 0
 
     /// Whether the display link can be paused (nothing dynamic in progress).
@@ -120,6 +122,7 @@ final class SwipeInputEngine
     {
         self.touches.removeAll()
         self.lastTap = nil
+        self.reversingTouchIDs.removeAll()
 
         for direction in self.activeDirections
         {
@@ -142,6 +145,19 @@ final class SwipeInputEngine
     func touchBegan(id: Int, at point: CGPoint, time: TimeInterval)
     {
         self.touches[id] = TouchRecord(start: point, current: point, startDate: time)
+
+        // Tap the opposite side of the screen to turn around instantly —
+        // no swipe required.
+        if self.configuration.isTapOppositeSideToTurnEnabled, self.viewportWidth > 0,
+           let currentDirection = self.currentHorizontalDirection()
+        {
+            let tapDirection = point.x >= self.viewportWidth / 2 ? Direction.right : Direction.left
+            if tapDirection != currentDirection
+            {
+                self.reversingTouchIDs.insert(id)
+                self.setDirections([tapDirection])
+            }
+        }
 
         // Double-tap toggles constant fire.
         if let lastTap = self.lastTap, lastTap.id != id, time - lastTap.endDate <= self.configuration.doubleTapWindow
@@ -173,7 +189,7 @@ final class SwipeInputEngine
         let duration = time - record.startDate
         let isTap = duration <= self.configuration.tapMaximumDuration && displacement <= self.configuration.swipeThreshold
 
-        if isTap
+        if isTap, !self.reversingTouchIDs.contains(id)
         {
             self.lastTap = (id, time)
 
@@ -184,10 +200,12 @@ final class SwipeInputEngine
                 self.onEvent(.stopped)
             }
         }
-        else
+        else if !isTap
         {
             self.lastTap = nil
         }
+
+        self.reversingTouchIDs.remove(id)
 
         self.updateDirections()
     }
@@ -197,6 +215,7 @@ final class SwipeInputEngine
         guard self.touches[id] != nil else { return }
 
         self.touches[id] = nil
+        self.reversingTouchIDs.remove(id)
         self.updateDirections()
     }
 
@@ -329,6 +348,14 @@ final class SwipeInputEngine
         {
             self.setDirections(desired)
         }
+    }
+
+    /// The single horizontal direction currently latched, if any.
+    private func currentHorizontalDirection() -> String?
+    {
+        let horizontal = self.activeDirections.intersection([Direction.left, Direction.right])
+        guard horizontal.count == 1 else { return nil }
+        return horizontal.first
     }
 
     private func setDirections(_ desired: Set<String>)
