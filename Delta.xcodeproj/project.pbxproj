@@ -73,12 +73,6 @@
 		BF13A7561D5D29B0000BB055 /* PreviewGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF13A7551D5D29B0000BB055 /* PreviewGameViewController.swift */; };
 		BF13A7581D5D2FD9000BB055 /* EmulatorCore+Delta.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF13A7571D5D2FD9000BB055 /* EmulatorCore+Delta.swift */; };
 		BF15AF841F54B43B009B6AAB /* ActionInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF15AF831F54B43B009B6AAB /* ActionInput.swift */; };
-		D5C0DEC00000000000000001 /* SwipeInputEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C0DEC00000000000000002 /* SwipeInputEngine.swift */; };
-		D5C0DEC00000000000000003 /* SwipeGameController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C0DEC00000000000000004 /* SwipeGameController.swift */; };
-		D5C0DEC00000000000000005 /* SwipeControlsOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C0DEC00000000000000006 /* SwipeControlsOverlayView.swift */; };
-		D5C0DEC00000000000000007 /* SwipeControlsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C0DEC00000000000000008 /* SwipeControlsSettingsView.swift */; };
-		D5C0DEC00000000000000009 /* SwipeControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C0DEC0000000000000000A /* SwipeControls.swift */; };
-		D5C0DEC0000000000000000B /* SwipeControlsDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C0DEC0000000000000000C /* SwipeControlsDemo.swift */; };
 		BF18B61F1E2985F900F70067 /* UIAlertController+Importing.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18B61E1E2985F900F70067 /* UIAlertController+Importing.swift */; };
 		BF1DAD5D1D9F576000E752A7 /* PreferredControllerSkinsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1DAD5C1D9F576000E752A7 /* PreferredControllerSkinsViewController.swift */; };
 		BF1F45A421AF274D00EF9895 /* SyncResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F45A321AF274D00EF9895 /* SyncResultViewController.swift */; };
@@ -304,6 +298,12 @@
 		D5B7242C2E26DC6700D3E5F3 /* ZIPFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF07200E219A3A9500F05DA4 /* ZIPFoundation.framework */; };
 		D5B7242D2E26DC6700D3E5F3 /* ZIPFoundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF07200E219A3A9500F05DA4 /* ZIPFoundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D5BE1BD72D0B9CBE00D2142E /* PatreonAPI.plist in Resources */ = {isa = PBXBuildFile; fileRef = D5BE1BD62D0B9CBE00D2142E /* PatreonAPI.plist */; };
+		D5C0DEC00000000000000001 /* SwipeInputEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C0DEC00000000000000002 /* SwipeInputEngine.swift */; };
+		D5C0DEC00000000000000003 /* SwipeGameController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C0DEC00000000000000004 /* SwipeGameController.swift */; };
+		D5C0DEC00000000000000005 /* SwipeControlsOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C0DEC00000000000000006 /* SwipeControlsOverlayView.swift */; };
+		D5C0DEC00000000000000007 /* SwipeControlsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C0DEC00000000000000008 /* SwipeControlsSettingsView.swift */; };
+		D5C0DEC00000000000000009 /* SwipeControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C0DEC0000000000000000A /* SwipeControls.swift */; };
+		D5C0DEC0000000000000000B /* SwipeControlsDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C0DEC0000000000000000C /* SwipeControlsDemo.swift */; };
 		D5C45FEF2BE992A80009DBB0 /* AltKit in Frameworks */ = {isa = PBXBuildFile; productRef = D5C45FEE2BE992A80009DBB0 /* AltKit */; };
 		D5C7DD012E26CF2E0048FF5C /* DeltaCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9F4FCE1AAD7B87004C9500 /* DeltaCore.framework */; };
 		D5C7DD022E26CF2E0048FF5C /* DeltaCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF9F4FCE1AAD7B87004C9500 /* DeltaCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -647,12 +647,6 @@
 		BF13A7551D5D29B0000BB055 /* PreviewGameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewGameViewController.swift; sourceTree = "<group>"; };
 		BF13A7571D5D2FD9000BB055 /* EmulatorCore+Delta.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "EmulatorCore+Delta.swift"; sourceTree = "<group>"; };
 		BF15AF831F54B43B009B6AAB /* ActionInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionInput.swift; sourceTree = "<group>"; };
-		D5C0DEC00000000000000002 /* SwipeInputEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeInputEngine.swift; sourceTree = "<group>"; };
-		D5C0DEC00000000000000004 /* SwipeGameController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeGameController.swift; sourceTree = "<group>"; };
-		D5C0DEC00000000000000006 /* SwipeControlsOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeControlsOverlayView.swift; sourceTree = "<group>"; };
-		D5C0DEC00000000000000008 /* SwipeControlsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeControlsSettingsView.swift; sourceTree = "<group>"; };
-		D5C0DEC0000000000000000A /* SwipeControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeControls.swift; sourceTree = "<group>"; };
-		D5C0DEC0000000000000000C /* SwipeControlsDemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeControlsDemo.swift; sourceTree = "<group>"; };
 		BF18B61E1E2985F900F70067 /* UIAlertController+Importing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Importing.swift"; sourceTree = "<group>"; };
 		BF1DAD5C1D9F576000E752A7 /* PreferredControllerSkinsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferredControllerSkinsViewController.swift; sourceTree = "<group>"; };
 		BF1F45A321AF274D00EF9895 /* SyncResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncResultViewController.swift; sourceTree = "<group>"; };
@@ -912,6 +906,12 @@
 		D5B6F5D22D6FC0F00061C365 /* FollowUsFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowUsFooterView.swift; sourceTree = "<group>"; };
 		D5B6F5D42D6FC23E0061C365 /* FollowUsFooterView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FollowUsFooterView.xib; sourceTree = "<group>"; };
 		D5BE1BD62D0B9CBE00D2142E /* PatreonAPI.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PatreonAPI.plist; sourceTree = "<group>"; };
+		D5C0DEC00000000000000002 /* SwipeInputEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeInputEngine.swift; sourceTree = "<group>"; };
+		D5C0DEC00000000000000004 /* SwipeGameController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeGameController.swift; sourceTree = "<group>"; };
+		D5C0DEC00000000000000006 /* SwipeControlsOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeControlsOverlayView.swift; sourceTree = "<group>"; };
+		D5C0DEC00000000000000008 /* SwipeControlsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeControlsSettingsView.swift; sourceTree = "<group>"; };
+		D5C0DEC0000000000000000A /* SwipeControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeControls.swift; sourceTree = "<group>"; };
+		D5C0DEC0000000000000000C /* SwipeControlsDemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeControlsDemo.swift; sourceTree = "<group>"; };
 		D5C7DD032E26CF350048FF5C /* NESDeltaCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = NESDeltaCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D5C7DD062E26CF540048FF5C /* SNESDeltaCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SNESDeltaCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D5C7DD092E26CF5A0048FF5C /* GBADeltaCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = GBADeltaCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2118,12 +2118,12 @@
 				TargetAttributes = {
 					BF14D8941DE7A512002CA1BE = {
 						CreatedOnToolsVersion = 8.2;
-						DevelopmentTeam = 6XVY5G3U44;
+						DevelopmentTeam = NK8KQXCK9X;
 						ProvisioningStyle = Automatic;
 					};
 					BF6E70B925D2187800E41CD1 = {
 						CreatedOnToolsVersion = 12.5;
-						DevelopmentTeam = 6XVY5G3U44;
+						DevelopmentTeam = NK8KQXCK9X;
 						ProvisioningStyle = Automatic;
 					};
 					BFFA71D61AAC406100EE9DD1 = {
@@ -3049,7 +3049,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C786AF1D2DDB6223BE2063CC /* Pods-Delta.debug.xcconfig */;
 			buildSettings = {
-				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -3110,6 +3109,7 @@
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = "non-global";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = BETA;
+				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
 				SWIFT_INCLUDE_PATHS = "$(inherited) \"$(SRCROOT)/Cores/GPGXDeltaCore/Sources/GPGXBridge\"";
 				SWIFT_OBJC_BRIDGING_HEADER = "Delta/Supporting Files/Delta-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -3122,7 +3122,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A19FF50F55441BC2B2248241 /* Pods-Delta.release.xcconfig */;
 			buildSettings = {
-				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -3145,6 +3144,7 @@
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = "non-global";
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
 				SWIFT_INCLUDE_PATHS = "$(inherited) \"$(SRCROOT)/Cores/GPGXDeltaCore/Sources/GPGXBridge\"";
 				SWIFT_OBJC_BRIDGING_HEADER = "Delta/Supporting Files/Delta-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";

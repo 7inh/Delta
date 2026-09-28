@@ -33,6 +33,16 @@ Lưu ý upstream đã vá khi build với Xcode 27:
 - `Cores/SNESDeltaCore/snes9x/conffile.{h,cpp}` comparator thiếu `const` với libc++ mới → đã thêm `const`
 - Deployment target các Pods/subproject < 15.0 bị Xcode 27 từ chối → đã bump lên 15.0 (chỉ working tree; nếu `pod install` lại, nhớ `post_install` trong `Podfile` set 15.0)
 
+## Build cho device thật (sideload)
+
+Nếu Xcode báo `No Account for Team "6XVY5G3U44"` / `No signing certificate` ở các target MelonDSDeltaCore / GPGXDeltaCore / các core khác: đó là team của upstream còn sót trong project của các submodule. Chạy:
+
+```bash
+Scripts/setup-signing.sh NK8KQXCK9X   # hoặc team ID của bạn
+```
+
+rồi chọn team của bạn cho target **Delta** (Signing & Capabilities). Lỗi `The project item "MelonDSDeltaCore.xcodeproj/libMelonDS/..."` nghĩa là submodule melonDS bên trong chưa checkout đủ — sửa bằng `git submodule update --init --recursive --force Cores/MelonDSDeltaCore`.
+
 ## Build (Xcode 27)
 
 ```bash
