@@ -37,11 +37,8 @@ struct SettingsView: View
                 ControlsSection()
                 EmulationSection()
                 OnlineMultiplayerSection()
-                DisplaySection()
                 ServicesSection()
                 MiscellaneousSection()
-                CreditsSection()
-                SupportSection()
             }
             .safeAreaPadding(.top, 8)
             .navigationTitle("Settings")
@@ -315,23 +312,6 @@ private struct ServicesSection: View
 
 // MARK: - Patreon
 
-// MARK: - App Icon
-
-private struct DisplaySection: View
-{
-    var body: some View {
-        Section("Display") {
-            NavigationLink {
-                AltAppIconsViewController.ViewRepresentable()
-                    .navigationBarTitleDisplayMode(.large)
-                    .ignoresSafeArea()
-            } label: {
-                SettingsRow(label: Text("App Icon"), systemImage: "square.grid.2x2", color: .blue)
-            }
-        }
-    }
-}
-
 // MARK: - Experimental, Minor, & Advanced
 
 private struct MiscellaneousSection: View
@@ -353,24 +333,7 @@ private struct MiscellaneousSection: View
             NavigationLink {
                 ExperimentalFeaturesView()
             } label: {
-                SettingsRow(label: Text("Experimental"), systemImage: "flask", color: .gray) {
-                    SettingsBadge(text: "Patrons")
-                }
-            }
-        }
-    }
-}
-
-// MARK: - Credits
-
-private struct CreditsSection: View
-{
-    var body: some View {
-        Section("Credits") {
-            NavigationLink {
-                ContributorsView()
-            } label: {
-                Text("Contributors")
+                SettingsRow(label: Text("Experimental"), systemImage: "flask", color: .gray)
             }
 
             NavigationLink {
@@ -383,73 +346,6 @@ private struct CreditsSection: View
     }
 }
 
-// MARK: - Support
-
-private struct SupportSection: View
-{
-    @Environment(\.openURL)
-    var openURL
-    
-    @SwiftUI.State
-    private var showMailError = false
-
-    var body: some View {
-        Section {
-            Button("Contact Us") {
-                // TODO: support attachments
-                let email = "support@altstore.io"
-                let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
-                let subject = "Delta \(version) Feedback"
-                let urlString = "mailto:\(email)?subject=\(subject)"
-                
-                if let url = URL(string: urlString)
-                {
-                    openURL(url) { success in
-                        if !success { showMailError = true }
-                    }
-                }
-            }
-            .alert("Cannot Send Mail", isPresented: $showMailError) {}
-            
-            Link("Privacy Policy", destination: URL(string: "https://altstore.io/privacy")!)
-            
-            Link("Terms of Use", destination: URL(string: "https://altstore.io/terms")!)
-        } header: {
-            Text("Support")
-        } footer: {
-            RepresentedFooterView()
-                .containerRelativeFrame(.horizontal)
-        }
-    }
-}
-
-// MARK: - Footer
-
-private struct RepresentedFooterView: UIViewRepresentable
-{
-    func makeUIView(context: Context) -> FollowUsFooterView
-    {
-        let view = FollowUsFooterView(prefersFullColorIcons: false)
-        view.stackView.spacing = 20
-        view.stackView.isLayoutMarginsRelativeArrangement = true
-        view.stackView.directionalLayoutMargins.top = 8
-        view.stackView.directionalLayoutMargins.bottom = 20
-        return view
-    }
-
-    func updateUIView(_ uiView: FollowUsFooterView, context: Context) {}
-
-    func sizeThatFits(_ proposal: ProposedViewSize, uiView: FollowUsFooterView, context: Context) -> CGSize?
-    {
-        guard let width = proposal.width ?? uiView.window?.bounds.width else { return nil }
-
-        return uiView.systemLayoutSizeFitting(
-            CGSize(width: width, height: UIView.layoutFittingCompressedSize.height),
-            withHorizontalFittingPriority: .required,
-            verticalFittingPriority: .fittingSizeLevel
-        )
-    }
-}
 
 #Preview {
     SettingsView()

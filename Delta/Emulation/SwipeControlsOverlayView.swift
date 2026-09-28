@@ -27,6 +27,8 @@ final class SwipeControlsOverlayView: UIView
 
     private var passthroughFrames: [CGRect] = []
     private var passthroughCacheKey: String?
+    private var gestureFrames: [String: [CGRect]] = [:]
+    private var buttonHighlightLayers: [String: CAShapeLayer] = [:]
     private var displayLink: CADisplayLink?
     private var nextTouchID = 0
     private var touchIDs = [ObjectIdentifier: Int]()
@@ -197,6 +199,8 @@ final class SwipeControlsOverlayView: UIView
             self.engine.configuration.jumpButton, self.engine.configuration.fireButton
         ]
 
+        self.gestureFrames.removeAll()
+
         self.passthroughFrames = items.compactMap { item -> CGRect? in
             // Touch screens (Nintendo DS) always pass through.
             if item.kind == .touchScreen { return item.frame.applying(scale) }
@@ -207,9 +211,48 @@ final class SwipeControlsOverlayView: UIView
             let handlesItem = inputStrings.contains { gestureInputs.contains($0) }
 
             let frame = item.frame.applying(scale)
+            let convertedFrame = self.convert(frame, from: controllerView)
 
-            return handlesItem ? nil : self.convert(frame, from: controllerView)
+            // Remember where gesture-controlled buttons live so we can show
+            // press highlights on the skin when gestures fire those inputs.
+            if handlesItem
+            {
+                let isDirectionalPad = [Direction.up, Direction.down, Direction.left, Direction.right].filter({ inputStrings.contains($0) }).count >= 2
+
+                for input in inputStrings where gestureInputs.contains(input)
+                {
+                    // For a multi-direction item (d-pad), light up just the
+                    // relevant half; single-button items light up fully.
+                    let subframe: CGRect
+                    if isDirectionalPad
+                    {
+                        switch input
+                        {
+                        case Direction.left: subframe = CGRect(x: convertedFrame.minX, y: convertedFrame.minY, width: convertedFrame.width / 2, height: convertedFrame.height)
+                        case Direction.right: subframe = CGRect(x: convertedFrame.midX, y: convertedFrame.minY, width: convertedFrame.width / 2, height: convertedFrame.height)
+                        case Direction.up: subframe = CGRect(x: convertedFrame.minX, y: convertedFrame.minY, width: convertedFrame.width, height: convertedFrame.height / 2)
+                        case Direction.down: subframe = CGRect(x: convertedFrame.minX, y: convertedFrame.midY, width: convertedFrame.width, height: convertedFrame.height / 2)
+                        default: subframe = convertedFrame
+                        }
+                    }
+                    else
+                    {
+                        subframe = convertedFrame.insetBy(dx: convertedFrame.width * 0.12, dy: convertedFrame.height * 0.12)
+                    }
+
+                    self.gestureFrames[input, default: []].append(subframe)
+                }
+            }
+
+            return handlesItem ? nil : convertedFrame
         }
+
+        // Skin changed: rebuild highlights from scratch on next update.
+        for layer in self.buttonHighlightLayers.values
+        {
+            layer.removeFromSuperlayer()
+        }
+        self.buttonHighlightLayers.removeAll()
     }
 
     // MARK: - Touch Routing -
@@ -304,6 +347,8 @@ final class SwipeControlsOverlayView: UIView
 
     @objc private func step(_ displayLink: CADisplayLink)
     {
+        // Cheap: only recomputes when skin/traits/size actually changed.
+        self.ensurePassthroughFrames()
         self.engine.tick()
         self.updateHints()
         self.updateDisplayLink()
@@ -436,6 +481,41 @@ final class SwipeControlsOverlayView: UIView
         }
 
         setOpacity(self.fireHintLayer, self.engine.isFireEffective)
+
+        // Highlight the skin buttons that gestures are pressing.
+        for (input, frames) in self.gestureFrames
+        {
+            let pressed = self.engine.activeDirections.contains(input)
+                || (input == self.engine.configuration.jumpButton && self.engine.isJumpPressed)
+                || (input == self.engine.configuration.fireButton && self.engine.isFirePressed)
+
+            for (index, frame) in frames.enumerated()
+            {
+                let layer = self.highlightLayer(for: input, index: index, frame: frame)
+                setOpacity(layer, pressed)
+            }
+        }
+    }
+
+    private func highlightLayer(for input: String, index: Int, frame: CGRect) -> CAShapeLayer
+    {
+        let key = "\(input)-\(index)"
+
+        if let layer = self.buttonHighlightLayers[key]
+        {
+            return layer
+        }
+
+        let layer = CAShapeLayer()
+        layer.path = UIBezierPath(roundedRect: frame, cornerRadius: 12).cgPath
+        layer.fillColor = UIColor.systemBlue.withAlphaComponent(0.22).cgColor
+        layer.strokeColor = UIColor.systemBlue.withAlphaComponent(0.9).cgColor
+        layer.lineWidth = 2.5
+        layer.opacity = 0
+        self.layer.addSublayer(layer)
+        self.buttonHighlightLayers[key] = layer
+
+        return layer
     }
 
     // MARK: - Layout -
