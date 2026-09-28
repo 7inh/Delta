@@ -87,6 +87,11 @@ extension SwipeControlsOverlayView
             tap(109, CGPoint(x: 200, y: 400))
             schedule(0.12) { tap(110, CGPoint(x: 200, y: 400)) }
         }
+        // 10. Toggle the pause menu (same path as tapping the MENU button).
+        schedule(31.0)
+        {
+            self.onMenuToggle?()
+        }
     }
 
     private func pressStart(repeatCount: Int = 0)

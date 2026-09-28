@@ -981,9 +981,25 @@ private extension GameViewController
 
         self.swipeControlsOverlayView = overlayView
 
+        // MENU button taps are handled by the overlay directly.
+        let menuToggleHandler: () -> Void = { [weak self] in
+            self?.handleOverlayMenuToggle()
+        }
+        overlayView.onMenuToggle = menuToggleHandler
+
         #if DEBUG
         overlayView.startDemoIfNeeded()
         #endif
+    }
+
+    @objc func handleOverlayMenuToggle()
+    {
+        guard let overlay = self.swipeControlsOverlayView, overlay.isHidden == false else { return }
+
+        // Explicit GameController cast: the IUO expression crashes the
+        // Swift 6.2 type-checker in this very large file.
+        let controller: GameController = self.controllerView
+        self.gameViewController(self, handleMenuInputFrom: controller)
     }
 
     func updateControllerSkin()
@@ -1800,6 +1816,7 @@ extension GameViewController: GameViewControllerDelegate
             
             self.performSegue(withIdentifier: "pause", sender: gameController)
         }
+
     }
     
     func gameViewControllerShouldPauseEmulation(_ gameViewController: DeltaCore.GameViewController) -> Bool

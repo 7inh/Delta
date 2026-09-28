@@ -21,15 +21,21 @@ final class SwipeControlsOverlayView: UIView
     private(set) var swipeController: SwipeGameController?
 
     /// The controller view we mirror (for skin item passthrough frames).
-    private weak var controllerView: ControllerView?
+    weak var controllerView: ControllerView?
 
     let engine = SwipeInputEngine()
 
     private var passthroughFrames: [CGRect] = []
     private var passthroughCacheKey: String?
+    private var menuFrame: CGRect?
+
+    /// Fired when the user taps the skin's MENU button (the overlay handles
+    /// it directly, so it works regardless of input-mapping quirks).
+    var onMenuToggle: (() -> Void)?
     private var displayLink: CADisplayLink?
     private var nextTouchID = 0
     private var touchIDs = [ObjectIdentifier: Int]()
+    private var menuTouchIDs = Set<ObjectIdentifier>()
 
     private var isActive: Bool {
         return !self.isHidden && self.superview != nil
@@ -197,6 +203,8 @@ final class SwipeControlsOverlayView: UIView
             self.engine.configuration.jumpButton, self.engine.configuration.fireButton
         ]
 
+        self.menuFrame = nil
+
         self.passthroughFrames = items.compactMap { item -> CGRect? in
             // Touch screens (Nintendo DS) always pass through.
             if item.kind == .touchScreen { return item.frame.applying(scale) }
@@ -206,9 +214,17 @@ final class SwipeControlsOverlayView: UIView
             let inputStrings = item.inputs.allInputs.map(\.stringValue)
             let handlesItem = inputStrings.contains { gestureInputs.contains($0) }
 
-            let frame = item.frame.applying(scale)
+            // extendedFrame is the button's actual (larger) hit area.
+            let hitFrame = item.extendedFrame == .zero ? item.frame : item.extendedFrame
+            let frame = self.convert(hitFrame.applying(scale), from: controllerView)
 
-            return handlesItem ? nil : self.convert(frame, from: controllerView)
+            if inputStrings.contains("menu")
+            {
+                self.menuFrame = frame
+                return nil // MENU is handled by the overlay itself.
+            }
+
+            return handlesItem ? nil : frame
         }
     }
 
@@ -219,6 +235,12 @@ final class SwipeControlsOverlayView: UIView
         guard self.isActive, self.bounds.contains(point) else { return nil }
 
         self.ensurePassthroughFrames()
+
+        if let menuFrame = self.menuFrame, menuFrame.insetBy(dx: -30, dy: -30).contains(point)
+        {
+            // MENU button: handled by the overlay itself.
+            return self
+        }
 
         for frame in self.passthroughFrames where frame.contains(point)
         {
@@ -232,7 +254,15 @@ final class SwipeControlsOverlayView: UIView
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?)
     {
         super.touchesBegan(touches, with: event)
-        self.handleTouches(touches) { id, point, _ in
+
+        let (menuTouches, gameTouches) = self.splitMenuTouches(touches)
+        for touch in menuTouches
+        {
+            self.menuTouchIDs.insert(ObjectIdentifier(touch))
+        }
+
+        guard gameTouches.isEmpty == false else { return }
+        self.handleTouches(gameTouches) { id, point, _ in
             self.engine.touchBegan(id: id, at: point, time: CACurrentMediaTime())
         }
     }
@@ -240,7 +270,10 @@ final class SwipeControlsOverlayView: UIView
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?)
     {
         super.touchesMoved(touches, with: event)
-        self.handleTouches(touches) { id, point, _ in
+
+        let (_, gameTouches) = self.splitMenuTouches(touches)
+        guard gameTouches.isEmpty == false else { return }
+        self.handleTouches(gameTouches) { id, point, _ in
             self.engine.touchMoved(id: id, at: point)
         }
     }
@@ -248,7 +281,20 @@ final class SwipeControlsOverlayView: UIView
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?)
     {
         super.touchesEnded(touches, with: event)
-        self.handleTouches(touches) { id, point, _ in
+
+        let (menuTouches, gameTouches) = self.splitMenuTouches(touches)
+
+        if !menuTouches.isEmpty
+        {
+            for touch in menuTouches
+            {
+                self.menuTouchIDs.remove(ObjectIdentifier(touch))
+            }
+            self.onMenuToggle?()
+        }
+
+        guard gameTouches.isEmpty == false else { return }
+        self.handleTouches(gameTouches) { id, point, _ in
             self.engine.touchEnded(id: id, at: point, time: CACurrentMediaTime())
         }
     }
@@ -256,9 +302,45 @@ final class SwipeControlsOverlayView: UIView
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?)
     {
         super.touchesCancelled(touches, with: event)
-        self.handleTouches(touches) { id, _, _ in
+
+        let (menuTouches, gameTouches) = self.splitMenuTouches(touches)
+        for touch in menuTouches
+        {
+            self.menuTouchIDs.remove(ObjectIdentifier(touch))
+        }
+
+        guard gameTouches.isEmpty == false else { return }
+        self.handleTouches(gameTouches) { id, _, _ in
             self.engine.touchCancelled(id: id)
         }
+    }
+
+    /// Splits touches into MENU-button touches (handled by the overlay) and
+    /// gesture touches (fed to the engine).
+    private func splitMenuTouches(_ touches: Set<UITouch>) -> (menu: Set<UITouch>, game: Set<UITouch>)
+    {
+        var menu = Set<UITouch>()
+        var game = Set<UITouch>()
+
+        for touch in touches
+        {
+            if self.menuTouchIDs.contains(ObjectIdentifier(touch))
+            {
+                menu.insert(touch)
+                continue
+            }
+
+            if let menuFrame = self.menuFrame, menuFrame.insetBy(dx: -30, dy: -30).contains(touch.location(in: self))
+            {
+                menu.insert(touch)
+            }
+            else
+            {
+                game.insert(touch)
+            }
+        }
+
+        return (menu, game)
     }
 
     private func handleTouches(_ touches: Set<UITouch>, handler: (Int, CGPoint, UITouch) -> Void)
