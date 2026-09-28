@@ -64,7 +64,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         {
             self.handle(.shortcut(shortcutItem))
         }
-        
+
+        #if DEBUG
+        self.handleLaunchArguments()
+        #endif
+
         let launchViewController = self.window?.rootViewController as! LaunchViewController
         self.launchViewController = launchViewController
         
@@ -113,8 +117,73 @@ extension SceneDelegate
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>)
     {
         guard let context = URLContexts.first else { return }
+
+        #if DEBUG
+        // DeltaSwipe: debug-only ROM import via `deltaswipe://import?path=<absolute file path>`.
+        // Makes simulator/device test automation able to import a ROM without UI.
+        if context.url.scheme == "deltaswipe", context.url.host == "import",
+           let components = URLComponents(url: context.url, resolvingAgainstBaseURL: false),
+           let path = components.queryItems?.first(where: { $0.name == "path" })?.value
+        {
+            let fileURL = URL(fileURLWithPath: path)
+
+            DatabaseManager.shared.importGames(at: [fileURL]) { games, errors in
+                for error in errors { print("[DeltaSwipe] Import error:", error) }
+                for game in games { print("[DeltaSwipe] Imported:", game.name) }
+            }
+            return
+        }
+        #endif
+
         self.handle(.url(context.url))
     }
+
+    #if DEBUG
+    /// DeltaSwipe: debug-only automation hooks (no system "Open in..." prompts):
+    ///   -DeltaSwipeImportPath <absolute path>   import a ROM into the library
+    ///   -DeltaSwipeAutoplay                     launch the imported game afterwards
+    func handleLaunchArguments()
+    {
+        let arguments = ProcessInfo.processInfo.arguments
+
+        guard let index = arguments.firstIndex(of: "-DeltaSwipeImportPath"), index + 1 < arguments.count else { return }
+        let fileURL = URL(fileURLWithPath: arguments[index + 1])
+        let shouldAutoplay = arguments.contains("-DeltaSwipeAutoplay")
+
+        let importGame = {
+            DatabaseManager.shared.importGames(at: [fileURL]) { games, errors in
+                for error in errors
+                {
+                    print("[DeltaSwipe] Import error:", error)
+                }
+
+                guard shouldAutoplay, let game = games.first else { return }
+                print("[DeltaSwipe] Imported:", game.name)
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    guard let scene = UIApplication.shared.connectedScenes.first else { return }
+
+                    NotificationCenter.default.post(
+                        name: .deepLinkControllerLaunchGame,
+                        object: nil,
+                        userInfo: [DeepLink.Key.game: game, DeepLink.Key.scene: scene]
+                    )
+                }
+            }
+        }
+
+        guard DatabaseManager.shared.isStarted else {
+            var observer: NSObjectProtocol?
+            observer = NotificationCenter.default.addObserver(forName: DatabaseManager.didStartNotification, object: DatabaseManager.shared, queue: .main) { [weak observer] _ in
+                observer.map { NotificationCenter.default.removeObserver($0) }
+                importGame()
+            }
+            return
+        }
+
+        importGame()
+    }
+    #endif
     
     func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void)
     {

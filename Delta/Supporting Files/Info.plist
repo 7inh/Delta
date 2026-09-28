@@ -175,6 +175,16 @@
 				<string>delta</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.leelinh.DeltaSwipe.import</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>deltaswipe</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
@@ -200,6 +210,8 @@
 		<string>altstore</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>LSSupportsGameMode</key>
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<false/>
@@ -321,8 +333,6 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportsDocumentBrowser</key>
-	<true/>
-	<key>LSSupportsGameMode</key>
 	<true/>
 	<key>UTExportedTypeDeclarations</key>
 	<array>

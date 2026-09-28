@@ -73,6 +73,12 @@
 		BF13A7561D5D29B0000BB055 /* PreviewGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF13A7551D5D29B0000BB055 /* PreviewGameViewController.swift */; };
 		BF13A7581D5D2FD9000BB055 /* EmulatorCore+Delta.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF13A7571D5D2FD9000BB055 /* EmulatorCore+Delta.swift */; };
 		BF15AF841F54B43B009B6AAB /* ActionInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF15AF831F54B43B009B6AAB /* ActionInput.swift */; };
+		D5C0DEC00000000000000001 /* SwipeInputEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C0DEC00000000000000002 /* SwipeInputEngine.swift */; };
+		D5C0DEC00000000000000003 /* SwipeGameController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C0DEC00000000000000004 /* SwipeGameController.swift */; };
+		D5C0DEC00000000000000005 /* SwipeControlsOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C0DEC00000000000000006 /* SwipeControlsOverlayView.swift */; };
+		D5C0DEC00000000000000007 /* SwipeControlsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C0DEC00000000000000008 /* SwipeControlsSettingsView.swift */; };
+		D5C0DEC00000000000000009 /* SwipeControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C0DEC0000000000000000A /* SwipeControls.swift */; };
+		D5C0DEC0000000000000000B /* SwipeControlsDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C0DEC0000000000000000C /* SwipeControlsDemo.swift */; };
 		BF18B61F1E2985F900F70067 /* UIAlertController+Importing.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18B61E1E2985F900F70067 /* UIAlertController+Importing.swift */; };
 		BF1DAD5D1D9F576000E752A7 /* PreferredControllerSkinsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1DAD5C1D9F576000E752A7 /* PreferredControllerSkinsViewController.swift */; };
 		BF1F45A421AF274D00EF9895 /* SyncResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F45A321AF274D00EF9895 /* SyncResultViewController.swift */; };
@@ -641,6 +647,12 @@
 		BF13A7551D5D29B0000BB055 /* PreviewGameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewGameViewController.swift; sourceTree = "<group>"; };
 		BF13A7571D5D2FD9000BB055 /* EmulatorCore+Delta.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "EmulatorCore+Delta.swift"; sourceTree = "<group>"; };
 		BF15AF831F54B43B009B6AAB /* ActionInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionInput.swift; sourceTree = "<group>"; };
+		D5C0DEC00000000000000002 /* SwipeInputEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeInputEngine.swift; sourceTree = "<group>"; };
+		D5C0DEC00000000000000004 /* SwipeGameController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeGameController.swift; sourceTree = "<group>"; };
+		D5C0DEC00000000000000006 /* SwipeControlsOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeControlsOverlayView.swift; sourceTree = "<group>"; };
+		D5C0DEC00000000000000008 /* SwipeControlsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeControlsSettingsView.swift; sourceTree = "<group>"; };
+		D5C0DEC0000000000000000A /* SwipeControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeControls.swift; sourceTree = "<group>"; };
+		D5C0DEC0000000000000000C /* SwipeControlsDemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeControlsDemo.swift; sourceTree = "<group>"; };
 		BF18B61E1E2985F900F70067 /* UIAlertController+Importing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Importing.swift"; sourceTree = "<group>"; };
 		BF1DAD5C1D9F576000E752A7 /* PreferredControllerSkinsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferredControllerSkinsViewController.swift; sourceTree = "<group>"; };
 		BF1F45A321AF274D00EF9895 /* SyncResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncResultViewController.swift; sourceTree = "<group>"; };
@@ -1589,6 +1601,11 @@
 				BF63BDE91D389EEB00FCB040 /* GameViewController.swift */,
 				BF13A7551D5D29B0000BB055 /* PreviewGameViewController.swift */,
 				BF15AF831F54B43B009B6AAB /* ActionInput.swift */,
+				D5C0DEC00000000000000002 /* SwipeInputEngine.swift */,
+				D5C0DEC00000000000000004 /* SwipeGameController.swift */,
+				D5C0DEC00000000000000006 /* SwipeControlsOverlayView.swift */,
+				D5C0DEC00000000000000008 /* SwipeControlsSettingsView.swift */,
+				D5C0DEC0000000000000000C /* SwipeControlsDemo.swift */,
 			);
 			path = Emulation;
 			sourceTree = "<group>";
@@ -1929,6 +1946,7 @@
 				E6A42DFA3006916800483EAB /* RetroAchievements.swift */,
 				D5D78AE429F9BC3700E064F0 /* DSAirPlay.swift */,
 				D5A9C01C29DE058C00A8D610 /* CustomFastForward.swift */,
+				D5C0DEC0000000000000000A /* SwipeControls.swift */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -2543,6 +2561,12 @@
 				D52CB8CA2CE2B85E00B04458 /* RevenueCatManager.swift in Sources */,
 				D5CDCCF02A859E5500E22131 /* UserDefaults+Delta.swift in Sources */,
 				BF15AF841F54B43B009B6AAB /* ActionInput.swift in Sources */,
+				D5C0DEC00000000000000001 /* SwipeInputEngine.swift in Sources */,
+				D5C0DEC00000000000000003 /* SwipeGameController.swift in Sources */,
+				D5C0DEC00000000000000005 /* SwipeControlsOverlayView.swift in Sources */,
+				D5C0DEC00000000000000007 /* SwipeControlsSettingsView.swift in Sources */,
+				D5C0DEC00000000000000009 /* SwipeControls.swift in Sources */,
+				D5C0DEC0000000000000000B /* SwipeControlsDemo.swift in Sources */,
 				D552DE3D2D39DB2A00E737BE /* WFCServer.swift in Sources */,
 				D5D78AE529F9BC3700E064F0 /* DSAirPlay.swift in Sources */,
 				BF4828841F9027B600028B97 /* Delta.xcdatamodeld in Sources */,
@@ -2871,7 +2895,7 @@
 		BF14D8951DE7A512002CA1BE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = NK8KQXCK9X;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -2879,7 +2903,7 @@
 		BF14D8961DE7A512002CA1BE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = NK8KQXCK9X;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -2888,7 +2912,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = NK8KQXCK9X;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -2897,7 +2921,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = NK8KQXCK9X;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -2957,7 +2981,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DGLES_SILENCE_DEPRECATION";
 				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies";
-				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.Delta;
+				PRODUCT_BUNDLE_IDENTIFIER = com.leelinh.DeltaSwipe;
 				PRODUCT_NAME = Delta;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -3012,7 +3036,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_CFLAGS = "-DGLES_SILENCE_DEPRECATION";
 				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies";
-				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.Delta;
+				PRODUCT_BUNDLE_IDENTIFIER = com.leelinh.DeltaSwipe;
 				PRODUCT_NAME = Delta;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -3025,6 +3049,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C786AF1D2DDB6223BE2063CC /* Pods-Delta.debug.xcconfig */;
 			buildSettings = {
+				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -3033,7 +3058,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = NK8KQXCK9X;
 				INFOPLIST_FILE = "Delta/Supporting Files/Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -3079,7 +3104,7 @@
 					"\"AuthenticationServices\"",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -DDEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.Delta;
+				PRODUCT_BUNDLE_IDENTIFIER = com.leelinh.DeltaSwipe;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRIP_INSTALLED_PRODUCT = YES;
@@ -3097,6 +3122,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A19FF50F55441BC2B2248241 /* Pods-Delta.release.xcconfig */;
 			buildSettings = {
+				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -3105,7 +3131,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = NK8KQXCK9X;
 				INFOPLIST_FILE = "Delta/Supporting Files/Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -3113,7 +3139,7 @@
 					"@executable_path/Frameworks",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -DIMPACTOR";
-				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.Delta;
+				PRODUCT_BUNDLE_IDENTIFIER = com.leelinh.DeltaSwipe;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRIP_INSTALLED_PRODUCT = YES;
@@ -3153,7 +3179,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023 Riley Testut. All rights reserved.";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -3201,7 +3227,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023 Riley Testut. All rights reserved.";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -3234,7 +3260,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = NK8KQXCK9X;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -3258,7 +3284,7 @@
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = NK8KQXCK9X;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = "-ObjC";
@@ -3334,7 +3360,7 @@
 			repositoryURL = "https://github.com/RevenueCat/purchases-ios-spm.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 5.8.0;
+				minimumVersion = 5.91.0;
 			};
 		};
 		D5AE76C02C2B59240086471B /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {

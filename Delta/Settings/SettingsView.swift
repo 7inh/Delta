@@ -104,6 +104,12 @@ private struct ControlsSection: View
             } label: {
                 SettingsRow(label: Text("Touch & Haptics"), systemImage: "hand.tap", color: .red)
             }
+
+            NavigationLink {
+                SwipeControlsSettingsView()
+            } label: {
+                SettingsRow(label: Text("Swipe Controls"), systemImage: "hand.draw", color: .orange)
+            }
         }
     }
 }

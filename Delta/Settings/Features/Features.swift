@@ -16,6 +16,9 @@ extension Settings
         
         // Standard Features
         
+        @Feature(name: "Swipe Controls", description: "Control games with swipe gestures instead of on-screen buttons.", options: SwipeControlsOptions())
+        var swipeControls
+
         @Feature(name: "DS AirPlay", options: DSAirPlayOptions())
         var dsAirPlay
         

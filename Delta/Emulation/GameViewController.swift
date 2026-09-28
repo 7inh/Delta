@@ -211,8 +211,12 @@ class GameViewController: DeltaCore.GameViewController
     
     private var isGyroActive = false
     private var presentedGyroAlert = false
-    
+
     private var presentedJITAlert = false
+
+    // Swipe Controls
+    private var swipeControlsOverlayView: SwipeControlsOverlayView!
+    private let swipeGameController = SwipeGameController()
     
     private var achievementsTracker: AchievementsTracker?
     private var isPreparingAchievements = false
@@ -408,7 +412,10 @@ extension GameViewController
         self.view.layoutIfNeeded()
         
         self.controllerView.translucentControllerSkinOpacity = Settings.translucentControllerSkinOpacity
-        
+
+        // Swipe Controls
+        self.prepareSwipeControls()
+
         // Sustain Button
         self.sustainButtonsContentView = UIView(frame: CGRect(x: 0, y: 0, width: self.gameView.bounds.width, height: self.gameView.bounds.height))
         self.sustainButtonsContentView.translatesAutoresizingMaskIntoConstraints = false
@@ -767,6 +774,13 @@ extension GameViewController
         {
             self.emulatorCore?.updateCheats()
         }
+
+        if previousState == .running
+        {
+            // Emulation is pausing/stopping: release all held swipe inputs so
+            // they don't stick after resuming.
+            self.swipeControlsOverlayView?.pauseSession()
+        }
         
         if self.emulatorCore?.state == .running
         {
@@ -874,6 +888,25 @@ private extension GameViewController
         var controllers = [GameController]()
         controllers.append(self.controllerView)
         controllers.append(contentsOf: ExternalGameControllerManager.shared.connectedControllers)
+
+        // Swipe Controls: register swipe gestures as an additional controller
+        // whenever the touch controller view is active and no external
+        // controller is connected.
+        let isExternalControllerConnected = ExternalGameControllerManager.shared.connectedControllers.contains(where: { $0.playerIndex != nil })
+        let areSwipeControlsActive = Settings.features.swipeControls.isEnabled && !self.isSelectingSustainedButtons && !isExternalControllerConnected
+
+        if let playerIndex = self.controllerView.playerIndex, areSwipeControlsActive
+        {
+            self.swipeGameController.playerIndex = playerIndex
+            (self.swipeGameController.defaultInputMapping as? SwipeInputMapping)?.gameType = self.game?.type
+            controllers.append(self.swipeGameController)
+        }
+        else
+        {
+            self.swipeGameController.playerIndex = nil
+        }
+
+        self.swipeControlsOverlayView?.isHidden = !areSwipeControlsActive || self.controllerView.isHidden
         
         if let emulatorCore = self.emulatorCore, let game = self.game
         {
@@ -922,6 +955,30 @@ private extension GameViewController
         self.updateControllerSkin()
     }
     
+    func prepareSwipeControls()
+    {
+        guard self.swipeControlsOverlayView == nil else { return }
+
+        let overlayView = SwipeControlsOverlayView(controllerView: self.controllerView, swipeController: self.swipeGameController)
+        overlayView.translatesAutoresizingMaskIntoConstraints = false
+        overlayView.isHidden = true
+
+        self.view.addSubview(overlayView)
+
+        NSLayoutConstraint.activate([
+            overlayView.leadingAnchor.constraint(equalTo: self.controllerView.leadingAnchor),
+            overlayView.trailingAnchor.constraint(equalTo: self.controllerView.trailingAnchor),
+            overlayView.topAnchor.constraint(equalTo: self.controllerView.topAnchor),
+            overlayView.bottomAnchor.constraint(equalTo: self.controllerView.bottomAnchor)
+        ])
+
+        self.swipeControlsOverlayView = overlayView
+
+        #if DEBUG
+        overlayView.startDemoIfNeeded()
+        #endif
+    }
+
     func updateControllerSkin()
     {
         guard let game = self.game as? Game, let window = self.view.window else { return }
@@ -1377,7 +1434,12 @@ private extension GameViewController
         guard let gameController = self.pausingGameController else { return }
         
         self.isSelectingSustainedButtons = true
-        
+
+        // Swipe gestures would interfere with selecting sustained buttons.
+        self.swipeControlsOverlayView?.isHidden = true
+        self.swipeGameController.playerIndex = nil
+        self.swipeControlsOverlayView?.pauseSession()
+
         let sustainInputsMapping = SustainInputsMapping(gameController: gameController)
         gameController.addReceiver(self, inputMapping: sustainInputsMapping)
         
@@ -2358,6 +2420,12 @@ private extension GameViewController
         case _ where settingsName.rawValue.hasPrefix(ExperimentalFeatures.shared.airPlaySkins.settingsKey.rawValue):
             // Update whenever any of the AirPlay skins have changed.
             self.updateExternalDisplay()
+
+        case Settings.features.swipeControls.settingsKey:
+            // Swipe Controls feature (or an option) changed. Registering or
+            // unregistering the swipe controller requires updateControllers();
+            // option-only changes are handled by the overlay itself.
+            self.updateControllers()
             
         case .pauseWhileInactive: self.automaticallyPausesWhileInactive = Settings.pauseWhileInactive
         case .supportsExternalDisplays:
