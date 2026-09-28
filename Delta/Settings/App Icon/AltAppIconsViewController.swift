@@ -82,8 +82,8 @@ extension AltAppIconsViewController
             case .glass: return NSLocalizedString("Glass", comment: "")
             case .modern: return NSLocalizedString("Modern", comment: "")
             case .classic: return NSLocalizedString("Classic", comment: "")
-            case .patrons: return NSLocalizedString("Patrons", comment: "")
-            case .patronsButtonPack: return NSLocalizedString("Patrons - Button Pack", comment: "")
+            case .patrons: return NSLocalizedString("Extra Icons", comment: "")
+            case .patronsButtonPack: return NSLocalizedString("Button Pack", comment: "")
             }
         }
         

@@ -76,42 +76,14 @@ extension PurchaseManager
 {
     @MainActor
     var isActivePatron: Bool {
-        if let patreonAccount = DatabaseManager.shared.patreonAccount(), patreonAccount.hasBetaAccess
-        {
-            // User is signed into Patreon account and is an active patron.
-            return true
-        }
-        else
-        {
-            return false
-        }
+        // DeltaSwipe: Patreon gate removed — all patron features unlocked.
+        return true
     }
     
     @MainActor
     var isExperimentalFeaturesAvailable: Bool {
-        #if BETA
-        // Experimental features are always available in BETA version.
+        // DeltaSwipe: always available (Patreon gate removed).
         return true
-        #elseif LEGACY
-        // Experimental features are NEVER available in LEGACY version.
-        return false
-        #else
-        
-        if self.isActivePatron
-        {
-            return true
-        }
-        else if #available(iOS 17.5, *), RevenueCatManager.shared.hasBetaAccess
-        {
-            // User purchased in-app Friend Zone subscription.
-            return true
-        }
-        else
-        {
-            return false
-        }
-        
-        #endif
     }
     
     @MainActor
@@ -127,28 +99,7 @@ extension PurchaseManager
     
     @MainActor
     var isPatronIconsAvailable: Bool {
-        #if BETA
-        // Patron icons are always available in BETA version.
+        // DeltaSwipe: always available (Patreon gate removed).
         return true
-        #elseif LEGACY
-        // Patron icons are NEVER available in LEGACY version.
-        return false
-        #else
-
-        if self.isActivePatron
-        {
-            return true
-        }
-        else if #available(iOS 17.5, *), RevenueCatManager.shared.hasPastBetaAccess
-        {
-            // User purchased in-app Friend Zone subscription.
-            return true
-        }
-        else
-        {
-            return false
-        }
-
-        #endif
     }
 }

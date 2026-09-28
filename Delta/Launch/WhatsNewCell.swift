@@ -44,7 +44,7 @@ extension WhatsNewCollectionViewCell
         self.captionLabel.text = feature.caption
         self.imageView.image = feature.image
         
-        if feature.isPatronExclusive
+        if false // DeltaSwipe: Patreon badges removed
         {
             self.patronsLabel.isHidden = false
             self.stackView.backgroundColor = .clear

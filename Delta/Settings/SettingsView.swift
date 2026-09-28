@@ -34,7 +34,6 @@ struct SettingsView: View
     var body: some View {
         NavigationStack {
             Form {
-                PatreonSection()
                 ControlsSection()
                 EmulationSection()
                 OnlineMultiplayerSection()
@@ -315,30 +314,6 @@ private struct ServicesSection: View
 }
 
 // MARK: - Patreon
-
-private struct PatreonSection: View
-{
-    var body: some View {
-        if PurchaseManager.shared.supportsExternalPurchases
-        {
-            Section {
-                NavigationLink {
-                    PatreonViewController.ViewRepresentable()
-                        .ignoresSafeArea()
-                } label: {
-                    SettingsRow(
-                        label: Text(PurchaseManager.shared.isActivePatron
-                            ? "Manage Subscription" : "Become a Patron"),
-                        systemImage: "heart",
-                        color: .accentColor
-                    )
-                }
-            } footer: {
-                Text("Get early access to new features and unlock exclusive app icons.")
-            }
-        }
-    }
-}
 
 // MARK: - App Icon
 

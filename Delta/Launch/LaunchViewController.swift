@@ -117,8 +117,7 @@ extension LaunchViewController
         
         guard !self.presentedGameViewController else { return }
         self.presentedGameViewController = true
-        
-        PatreonAPI.shared.refreshPatreonAccount()
+        // DeltaSwipe: Patreon removed
         
         if #available(iOS 17.5, *)
         {

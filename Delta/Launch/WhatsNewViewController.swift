@@ -249,20 +249,14 @@ private extension WhatsNewViewController
             let data = try Data(contentsOf: fileURL)
             let features = try PropertyListDecoder().decode([NewFeature].self, from: data)
             
+            // DeltaSwipe: Patreon gating removed — all features shown normally.
             var preferredFeatures = features
-            if !PurchaseManager.shared.supportsExperimentalFeatures
-            {
-                // Only show non-Experimental Features.
-                preferredFeatures = preferredFeatures.filter { !$0.isPatronExclusive }
-            }
             
             // Only display first `maxFeatureCount` preferred features.
             preferredFeatures = Array(preferredFeatures.prefix(Self.maxFeatureCount))
             
-            let generalDataSource = RSTArrayCollectionViewDataSource<Box<NewFeature>>(items: preferredFeatures.filter { !$0.isPatronExclusive }.map(Box.init))
-            let patronsDataSource = RSTArrayCollectionViewDataSource<Box<NewFeature>>(items: preferredFeatures.filter { $0.isPatronExclusive }.map(Box.init))
-            
-            let dataSource = RSTCompositeCollectionViewDataSource(dataSources: [generalDataSource, patronsDataSource])
+            let arrayDataSource = RSTArrayCollectionViewDataSource<Box<NewFeature>>(items: preferredFeatures.map(Box.init))
+            let dataSource = RSTCompositeCollectionViewDataSource(dataSources: [arrayDataSource])
             dataSource.cellConfigurationHandler = { (cell, feature, indexPath) in
                 let cell = cell as! WhatsNewCollectionViewCell
                 cell.configure(with: feature.value)
