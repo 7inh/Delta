@@ -26,6 +26,7 @@ final class SwipeControlsOverlayView: UIView
     let engine = SwipeInputEngine()
 
     private var passthroughFrames: [CGRect] = []
+    private var passthroughCacheKey: String?
     private var displayLink: CADisplayLink?
     private var nextTouchID = 0
     private var touchIDs = [ObjectIdentifier: Int]()
@@ -156,6 +157,29 @@ final class SwipeControlsOverlayView: UIView
 
     func updatePassthroughFrames()
     {
+        self.passthroughCacheKey = nil
+        self.recomputePassthroughFrames()
+    }
+
+    /// Recomputes passthrough frames only when the skin, traits or view size
+    /// changed. The skin often loads *after* the overlay is created, so this
+    /// must not be a one-shot computation or Start/Select/Menu stop working.
+    func ensurePassthroughFrames()
+    {
+        guard let controllerView = self.controllerView else { return }
+
+        let skinID = controllerView.controllerSkin?.identifier ?? "-"
+        let traitsID = controllerView.controllerSkinTraits.map { String(describing: $0) } ?? "-"
+        let key = "\(skinID)|\(traitsID)|\(controllerView.bounds.size.width)x\(controllerView.bounds.size.height)"
+
+        guard key != self.passthroughCacheKey else { return }
+
+        self.passthroughCacheKey = key
+        self.recomputePassthroughFrames()
+    }
+
+    private func recomputePassthroughFrames()
+    {
         guard let controllerView = self.controllerView, let traits = controllerView.controllerSkinTraits else { return }
 
         guard let controllerSkin = controllerView.controllerSkin, let items = controllerSkin.items(for: traits), controllerView.bounds.width > 0 else {
@@ -192,6 +216,8 @@ final class SwipeControlsOverlayView: UIView
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView?
     {
         guard self.isActive, self.bounds.contains(point) else { return nil }
+
+        self.ensurePassthroughFrames()
 
         for frame in self.passthroughFrames where frame.contains(point)
         {
@@ -418,7 +444,7 @@ final class SwipeControlsOverlayView: UIView
         super.layoutSubviews()
 
         self.engine.setViewportWidth(self.bounds.width)
-        self.updatePassthroughFrames()
+        self.ensurePassthroughFrames()
 
         // Only rebuild hint layers when the size actually changes — rebuilding
         // every layout pass mutates the layer tree, which invalidates layout
