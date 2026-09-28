@@ -94,17 +94,7 @@ final class SwipeInputEngine
         return self.isFireBaseOn || self.isHoldFireActive
     }
 
-    /// Whether the fire button is currently being pulsed (for visuals).
-    var isFirePressed: Bool
-    {
-        return self.fireEmitting
-    }
 
-    /// Whether the jump button is currently being pulsed (for visuals).
-    var isJumpPressed: Bool
-    {
-        return self.jumpPulseRemaining > 0
-    }
 
     /// Split layout: any touch that began in the right-hand fire zone.
     private var isHoldFireActive: Bool
