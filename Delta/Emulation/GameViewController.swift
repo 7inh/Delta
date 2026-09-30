@@ -94,6 +94,8 @@ class GameViewController: DeltaCore.GameViewController
     /// Assumed to be Delta.Game instance
     override var game: GameProtocol? {
         willSet {
+            self.nearbyMultiplayer?.end()
+            self.nearbyMultiplayer = nil
             self.emulatorCore?.removeObserver(self, forKeyPath: #keyPath(EmulatorCore.state), context: &kvoContext)
             
             let game = self.game as? Game
@@ -127,6 +129,7 @@ class GameViewController: DeltaCore.GameViewController
     }
     
     //MARK: - Private Properties -
+    private var nearbyMultiplayer: MultiplayerSession?
     private var pauseViewController: PauseViewController?
     private var pausingGameController: GameController?
     
@@ -305,6 +308,8 @@ class GameViewController: DeltaCore.GameViewController
     
     deinit
     {
+        self.nearbyMultiplayer?.onEnd = nil
+        self.nearbyMultiplayer?.end()
         self.emulatorCore?.removeObserver(self, forKeyPath: #keyPath(EmulatorCore.state), context: &kvoContext)
     }
     
@@ -514,7 +519,8 @@ extension GameViewController
     override func viewDidAppear(_ animated: Bool)
     {
         super.viewDidAppear(animated)
-        
+        self.presentNearbyDisconnectIfNeeded()
+
         if self.emulatorCore?.deltaCore == MelonDS.core, ProcessInfo.processInfo.isJITAvailable
         {
             self.showJITEnabledAlert()
@@ -654,6 +660,45 @@ extension GameViewController
                 pauseViewController.cheatCodesItem = nil
             }
             
+            if self.game?.type == .nes
+            {
+                pauseViewController.nearbyMultiplayerItem = MenuItem(text: "Nearby Multiplayer", image: self.nearbyMultiplayerIcon(), action: { [weak self, weak pauseViewController] _ in
+                    guard let self, let pauseViewController else { return }
+                    if self.nearbyMultiplayer?.isActive == true
+                    {
+                        self.presentNearbyLobby(from: pauseViewController)
+                    }
+                    else
+                    {
+                        let alert = UIAlertController(title: "Nearby Multiplayer", message: "Share this NES game with a nearby device as Player 2.", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "Host Game", style: .default) { [weak self, weak pauseViewController] _ in
+                            guard let self, let pauseViewController, let core = self.emulatorCore else { return }
+                            let session = MultiplayerSession()
+                            self.nearbyMultiplayer = session
+                            session.onStart = { [weak self] in self?.pauseViewController?.dismiss() }
+                            session.onEnd = { [weak self] in
+                                guard let self else { return }
+                                self.updateControllers()
+                                DispatchQueue.main.async { [weak self] in self?.presentNearbyDisconnectIfNeeded() }
+                            }
+                            session.host(core: core, title: (self.game as? Game)?.name ?? "NES Game")
+                            self.swipeControlsOverlayView?.pauseSession()
+                            self.updateControllers()
+                            self.presentNearbyLobby(from: pauseViewController)
+                        })
+                        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                        pauseViewController.present(alert, animated: true)
+                    }
+                })
+            }
+            if self.nearbyMultiplayer?.isActive == true
+            {
+                pauseViewController.saveStateItem = nil
+                pauseViewController.loadStateItem = nil
+                pauseViewController.cheatCodesItem = nil
+                pauseViewController.fastForwardItem = nil
+                pauseViewController.sustainButtonsItem = nil
+            }
             self.pauseViewController = pauseViewController
             
         default: break
@@ -712,6 +757,8 @@ extension GameViewController
             self.startGameActivity()
             
         case "unwindToGames":
+            self.nearbyMultiplayer?.end()
+            self.nearbyMultiplayer = nil
             if self.isGameScene
             {
                 guard let session = self.view.window?.windowScene?.session else { return }
@@ -845,18 +892,19 @@ private extension GameViewController
     @objc func updateControllers()
     {
         let firstActiveController = ExternalGameControllerManager.shared.connectedControllers.first(where: { $0.playerIndex != nil })
-        if firstActiveController == nil && Settings.localControllerPlayerIndex == nil
+        let isNearbyHost = self.nearbyMultiplayer?.isActive == true
+        if !isNearbyHost, firstActiveController == nil && Settings.localControllerPlayerIndex == nil
         {
             Settings.localControllerPlayerIndex = 0
         }
-        else if let index = Settings.localControllerPlayerIndex, ExternalGameControllerManager.shared.connectedControllers.contains(where: { $0.playerIndex == index })
+        else if !isNearbyHost, let index = Settings.localControllerPlayerIndex, ExternalGameControllerManager.shared.connectedControllers.contains(where: { $0.playerIndex == index })
         {
             // There is an active controller with same player index as local controller, so disable local controller.
             Settings.localControllerPlayerIndex = nil
         }
         
         // If Settings.localControllerPlayerIndex is non-nil, show controller view.
-        if let index = Settings.localControllerPlayerIndex
+        if let index = isNearbyHost ? 0 : Settings.localControllerPlayerIndex
         {
             self.controllerView.playerIndex = index
             self.controllerView.isHidden = false
@@ -898,7 +946,7 @@ private extension GameViewController
         // whenever the touch controller view is active and no external
         // controller is connected.
         let isExternalControllerConnected = ExternalGameControllerManager.shared.connectedControllers.contains(where: { $0.playerIndex != nil })
-        let areSwipeControlsActive = Settings.features.swipeControls.isEnabled && !self.isSelectingSustainedButtons && !isExternalControllerConnected
+        let areSwipeControlsActive = Settings.features.swipeControls.isEnabled && !self.isSelectingSustainedButtons && (isNearbyHost || !isExternalControllerConnected)
 
         if let playerIndex = self.controllerView.playerIndex, areSwipeControlsActive
         {
@@ -958,8 +1006,14 @@ private extension GameViewController
         self.controllerView.isThumbstickHapticFeedbackEnabled = Settings.isThumbstickHapticFeedbackEnabled
         
         self.updateControllerSkin()
+        if let session = self.nearbyMultiplayer, session.isActive
+        {
+            var hostControllers: [GameController] = [self.controllerView, self.swipeGameController]
+            hostControllers.append(contentsOf: ExternalGameControllerManager.shared.connectedControllers)
+            session.routeHostControllers(hostControllers)
+        }
     }
-    
+
     func prepareSwipeControls()
     {
         guard self.swipeControlsOverlayView == nil else { return }
@@ -1009,7 +1063,7 @@ private extension GameViewController
         let traits = DeltaCore.ControllerSkin.Traits.defaults(for: window)
         let isExternalControllerConnected = ExternalGameControllerManager.shared.connectedControllers.contains(where: { $0.playerIndex != nil })
         
-        if Settings.localControllerPlayerIndex != nil
+        if self.nearbyMultiplayer?.isActive == true || Settings.localControllerPlayerIndex != nil
         {
             // If there is both a local player and a connected controller with a controller skin, we prioritize local player's skin.
             // Even if the skin doesn't exist, we'll fall back to standard skin for local player.
@@ -1514,6 +1568,7 @@ extension GameViewController
 {
     @objc func performQuickSaveAction()
     {
+        guard self.nearbyMultiplayer?.isActive != true else { return }
         guard let game = self.game as? Game, let emulatorCore, !emulatorCore.isWirelessMultiplayerActive else { return }
         
         let backgroundContext = DatabaseManager.shared.newBackgroundContext()
@@ -1548,6 +1603,7 @@ extension GameViewController
     
     @objc func performQuickLoadAction()
     {
+        guard self.nearbyMultiplayer?.isActive != true else { return }
         guard !AchievementsManager.shared.isAuthenticated || !Settings.features.retroAchievements.isHardcoreModeEnabled else {
             // Disable loading save states when using RetroAchievements and Hardcore Mode
             return
@@ -1572,6 +1628,7 @@ extension GameViewController
     
     func performFastForwardAction(activate: Bool)
     {
+        guard self.nearbyMultiplayer?.isActive != true else { return }
         guard let emulatorCore = self.emulatorCore, !emulatorCore.isWirelessMultiplayerActive else { return }
         
         if activate
@@ -1835,6 +1892,8 @@ extension GameViewController: GameViewControllerDelegate
     func gameViewControllerShouldResumeEmulation(_ gameViewController: DeltaCore.GameViewController) -> Bool
     {
         guard gameViewController == self else { return false }
+        if let session = self.nearbyMultiplayer, session.isActive, session.state.phase != .playing, session.state.phase != .paused { return false }
+        if let session = self.nearbyMultiplayer, session.state.phase == .disconnected, session.errorMessage != nil { return false }
         guard !self.isContinuingHandoff else { return false }
         guard !self.isPreparingAchievements else { return false }
         
@@ -2855,6 +2914,56 @@ private extension UserDefaults
         {
         case .portrait: self.gameScreenOffsetPortrait = offset
         case .landscape: self.gameScreenOffsetLandscape = offset
+        }
+    }
+}
+
+private extension GameViewController
+{
+    func presentNearbyDisconnectIfNeeded()
+    {
+        guard let session = self.nearbyMultiplayer, session.state.phase == .disconnected,
+              let message = session.errorMessage, self.presentedViewController == nil,
+              self.view.window != nil else { return }
+        let ended = UIAlertController(title: "Multiplayer Ended", message: message, preferredStyle: .alert)
+        ended.addAction(UIAlertAction(title: "Continue Solo", style: .default) { [weak self] _ in
+            self?.nearbyMultiplayer = nil
+            self?.resumeEmulation()
+        })
+        ended.addAction(UIAlertAction(title: "Host Again", style: .default) { [weak self] _ in
+            guard let self else { return }
+            self.nearbyMultiplayer = nil
+            self.gameViewController(self, handleMenuInputFrom: self.controllerView)
+        })
+        self.present(ended, animated: true)
+    }
+
+    func presentNearbyLobby(from pause: PauseViewController)
+    {
+        guard let session = self.nearbyMultiplayer else { return }
+        let lobby = NearbyMultiplayerLobby(session: session, resume: { [weak pause] in
+            pause?.dismiss()
+        }, close: { [weak self, weak pause] in
+            self?.nearbyMultiplayer = nil
+            self?.updateControllers()
+            pause?.dismiss()
+        })
+        pause.navigationController?.pushViewController(UIHostingController(rootView: lobby), animated: true)
+    }
+
+    // The pause menu's vibrancy darkens mid-tone colors, so match the other items' white
+    // glyph assets by baking the symbol white instead of relying on tinting.
+    func nearbyMultiplayerIcon() -> UIImage {
+        let configuration = UIImage.SymbolConfiguration(pointSize: 40, weight: .medium)
+        let symbol = UIImage(systemName: "person.2.fill", withConfiguration: configuration)!
+        let tinted = symbol.withTintColor(.white, renderingMode: .alwaysOriginal)
+        let canvas = CGSize(width: 78, height: 78)
+        let box = CGSize(width: 40, height: 40) // glyph footprint comparable to the other menu icons
+        let scale = min(box.width / symbol.size.width, box.height / symbol.size.height)
+        let size = CGSize(width: symbol.size.width * scale, height: symbol.size.height * scale)
+        let origin = CGPoint(x: (canvas.width - size.width) / 2, y: (canvas.height - size.height) / 2)
+        return UIGraphicsImageRenderer(size: canvas).image { _ in
+            tinted.draw(in: CGRect(origin: origin, size: size))
         }
     }
 }

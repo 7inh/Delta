@@ -87,3 +87,7 @@ swiftc -O Delta/Emulation/SwipeInputEngine.swift Tests/SwipeControls/main.swift 
 ```
 
 30 checks: sticky/hold direction, jump pulse, autofire duty cycle, double-tap window, reset, isIdle, swipe-down action, split fire zone, 8-way.
+
+## Nearby NES Multiplayer
+
+Play a two-player NES game on two iPhones/iPads on the same Wi-Fi. Host from **Pause → Nearby Multiplayer → Host Game**; join from **Settings → Nearby Multiplayer** using the host’s pairing code. When both devices have the same imported ROM, the guest generates its own video and audio in lockstep with the host for lag-free play; otherwise the host streams the game. Only the host writes saves. See [setup, limitations, and verification](Docs/NearbyMultiplayer.md).

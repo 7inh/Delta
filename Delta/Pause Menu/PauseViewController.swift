@@ -20,7 +20,7 @@ class PauseViewController: UIViewController, PauseInfoProviding
     }
     
     var pauseItems: [MenuItem] {
-        return [self.saveStateItem, self.loadStateItem, self.cheatCodesItem, self.fastForwardItem, self.sustainButtonsItem, self.screenshotItem, self.askLuItem].compactMap { $0 }
+        return [self.saveStateItem, self.loadStateItem, self.cheatCodesItem, self.fastForwardItem, self.sustainButtonsItem, self.screenshotItem, self.nearbyMultiplayerItem, self.askLuItem].compactMap { $0 }
     }
     
     var closeButtonTitle: String = NSLocalizedString("Main Menu", comment: "")
@@ -44,6 +44,7 @@ class PauseViewController: UIViewController, PauseInfoProviding
     var sustainButtonsItem: MenuItem?
     var screenshotItem: MenuItem?
     var askLuItem: MenuItem?
+    var nearbyMultiplayerItem: MenuItem?
     
     /// PauseInfoProviding
     var pauseText: String?

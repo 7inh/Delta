@@ -36,6 +36,13 @@ struct SettingsView: View
             Form {
                 ControlsSection()
                 EmulationSection()
+                Section {
+                    NavigationLink {
+                        NearbyMultiplayerJoinView()
+                    } label: {
+                        SettingsRow(label: Text("Nearby Multiplayer"), systemImage: "person.2.fill", color: .blue)
+                    }
+                }
                 OnlineMultiplayerSection()
                 ServicesSection()
                 MiscellaneousSection()

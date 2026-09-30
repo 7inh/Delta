@@ -369,6 +369,13 @@
 		E6BD34AB2F563F1A001C9D78 /* AchievementGreeting.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BD34AA2F563F1A001C9D78 /* AchievementGreeting.swift */; };
 		E6BD34AD2F587BF0001C9D78 /* AchievementGameBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BD34AC2F587BF0001C9D78 /* AchievementGameBanner.swift */; };
 		E6EB10AF2F58B1C50001AAD2 /* AchievementNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6EB10AE2F58B1C50001AAD2 /* AchievementNotification.swift */; };
+		D50A11CE1000000000000000 /* MultiplayerControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50A11CE0000000000000000 /* MultiplayerControllers.swift */; };
+		D50A11CE1000000000000001 /* MultiplayerMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50A11CE0000000000000001 /* MultiplayerMedia.swift */; };
+		D50A11CE1000000000000002 /* MultiplayerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50A11CE0000000000000002 /* MultiplayerProtocol.swift */; };
+		D50A11CE1000000000000003 /* MultiplayerSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50A11CE0000000000000003 /* MultiplayerSession.swift */; };
+		D50A11CE1000000000000004 /* MultiplayerTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50A11CE0000000000000004 /* MultiplayerTransport.swift */; };
+		D50A11CE1000000000000005 /* MultiplayerViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50A11CE0000000000000005 /* MultiplayerViews.swift */; };
+		D50A11CE1000000000000006 /* MultiplayerLocalGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50A11CE0000000000000006; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -958,6 +965,13 @@
 		E6BD34AC2F587BF0001C9D78 /* AchievementGameBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementGameBanner.swift; sourceTree = "<group>"; };
 		E6EB10AE2F58B1C50001AAD2 /* AchievementNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementNotification.swift; sourceTree = "<group>"; };
 		FCE7674E5643CDB43BC8ED32 /* DeltaOperatorWritebackToast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeltaOperatorWritebackToast.swift; sourceTree = "<group>"; };
+		D50A11CE0000000000000000 /* MultiplayerControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplayerControllers.swift; sourceTree = "<group>"; };
+		D50A11CE0000000000000001 /* MultiplayerMedia.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplayerMedia.swift; sourceTree = "<group>"; };
+		D50A11CE0000000000000002 /* MultiplayerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplayerProtocol.swift; sourceTree = "<group>"; };
+		D50A11CE0000000000000003 /* MultiplayerSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplayerSession.swift; sourceTree = "<group>"; };
+		D50A11CE0000000000000004 /* MultiplayerTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplayerTransport.swift; sourceTree = "<group>"; };
+		D50A11CE0000000000000005 /* MultiplayerViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplayerViews.swift; sourceTree = "<group>"; };
+		D50A11CE0000000000000006 /* MultiplayerLocalGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplayerLocalGame.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1598,6 +1612,7 @@
 		BFFB709D1AF99ACA00DE56FE /* Emulation */ = {
 			isa = PBXGroup;
 			children = (
+				D50A11CEFFFFFFFFFFFFFFFF /* Multiplayer */,
 				BF63BDE91D389EEB00FCB040 /* GameViewController.swift */,
 				BF13A7551D5D29B0000BB055 /* PreviewGameViewController.swift */,
 				BF15AF831F54B43B009B6AAB /* ActionInput.swift */,
@@ -2014,6 +2029,20 @@
 				8ECE6641DE30D01EA30FE7F6 /* Pods-DeltaPreviews.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		D50A11CEFFFFFFFFFFFFFFFF /* Multiplayer */ = {
+			isa = PBXGroup;
+			children = (
+				D50A11CE0000000000000000 /* MultiplayerControllers.swift */,
+				D50A11CE0000000000000001 /* MultiplayerMedia.swift */,
+				D50A11CE0000000000000002 /* MultiplayerProtocol.swift */,
+				D50A11CE0000000000000003 /* MultiplayerSession.swift */,
+				D50A11CE0000000000000004 /* MultiplayerTransport.swift */,
+				D50A11CE0000000000000005 /* MultiplayerViews.swift */,
+				D50A11CE0000000000000006 /* MultiplayerLocalGame.swift */,
+			);
+			path = ../Multiplayer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2562,6 +2591,13 @@
 				D5CDCCF02A859E5500E22131 /* UserDefaults+Delta.swift in Sources */,
 				BF15AF841F54B43B009B6AAB /* ActionInput.swift in Sources */,
 				D5C0DEC00000000000000001 /* SwipeInputEngine.swift in Sources */,
+				D50A11CE1000000000000005 /* MultiplayerViews.swift in Sources */,
+				D50A11CE1000000000000006 /* MultiplayerLocalGame.swift in Sources */,
+				D50A11CE1000000000000004 /* MultiplayerTransport.swift in Sources */,
+				D50A11CE1000000000000003 /* MultiplayerSession.swift in Sources */,
+				D50A11CE1000000000000002 /* MultiplayerProtocol.swift in Sources */,
+				D50A11CE1000000000000001 /* MultiplayerMedia.swift in Sources */,
+				D50A11CE1000000000000000 /* MultiplayerControllers.swift in Sources */,
 				D5C0DEC00000000000000003 /* SwipeGameController.swift in Sources */,
 				D5C0DEC00000000000000005 /* SwipeControlsOverlayView.swift in Sources */,
 				D5C0DEC00000000000000007 /* SwipeControlsSettingsView.swift in Sources */,
